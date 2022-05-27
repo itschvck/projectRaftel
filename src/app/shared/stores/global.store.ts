@@ -1,3 +1,8 @@
+import { Injectable } from "@angular/core";
+
+@Injectable({ providedIn: 'root' })
 export class GlobalStore {
-    personnel: boolean = false;
+    isLoginPage  : boolean = false;
+    isPageLoading: boolean = false;
+    personnel    : boolean = false;
 }

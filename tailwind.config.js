@@ -25,7 +25,6 @@ module.exports = {
         lightSky         : '#3498db',
         darkMina         : '#8e44ad',
         lightMina        : '#9b59b6'
-
       }
     },
   },

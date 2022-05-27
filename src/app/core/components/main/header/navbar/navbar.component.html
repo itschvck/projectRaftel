@@ -29,9 +29,17 @@
             <li><a>promos</a></li>
             <li><a>our location</a></li>
         </ul>
-        <button class="btn tracking-widest ml-3">Contact Us</button>
+        <button class="btn tracking-widest ml-3 lowercase"
+                *ngIf="!isLogged">Contact Us</button>
+        <button class="btn tracking-widest ml-3 lowercase"
+                *ngIf="isLogged"
+                (click)="onLogOut()">Logout</button>
     </div>
     <div class="navbar-end lg:hidden">
-        <button class="btn tracking-widest">Contact Us</button>
+        <button class="btn tracking-widest lowercase"
+                *ngIf="!isLogged">Contact Us</button>
+        <button class="btn tracking-widest ml-3 lowercase"
+                *ngIf="isLogged"
+                (click)="onLogOut()">Logout</button>
     </div>
 </div>

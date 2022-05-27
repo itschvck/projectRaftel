@@ -8,6 +8,8 @@ import { HeaderComponent } from './core/components/main/header/header.component'
 import { FooterComponent } from './core/components/main/footer/footer.component';
 import { NavbarComponent } from './core/components/main/header/navbar/navbar.component';
 import { HomeComponent } from './features/home/home.component';
+import { HttpClientModule } from "@angular/common/http";
+import { SharedModule } from "./shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -20,9 +22,12 @@ import { HomeComponent } from './features/home/home.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
+    SharedModule
   ],
   providers: [],
+  exports: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
