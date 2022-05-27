@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from "../../services/auth.service";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: 'raftel-admin',
@@ -8,12 +9,20 @@ import { AuthService } from "../../services/auth.service";
 })
 export class AdminComponent implements OnInit {
 
+  //Check if redirected for unauthorized navigation
+  isAuth: string = '';
+
   constructor(
-      private authService: AuthService
+      private authService: AuthService,
+      private ar         : ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.authService.autoLogin();
+    this.ar.queryParams.subscribe(
+        params => {
+          this.isAuth = params['auth'];
+        }
+    );
   }
 
 }

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AdminData } from "../../../interfaces/admin";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../../services/auth.service";
+import { HttpResponseService } from "../../../../shared/services/http-response.service";
 
 @Component({
   selector: 'raftel-login',
@@ -19,27 +20,36 @@ export class LoginComponent implements OnInit {
 
   //Initialize adminData object with Admin interface
   adminData: AdminData = {
-    email   : '',
-    password: ''
+    email     : '',
+    password  : ''
   }
 
   //Check if redirected for unauthorized navigation
-  isAuth    : string = '';
+  isAuth      : string = '';
 
   //Initialize error status
-  hasError  : boolean = false;
+  hasError    : boolean = false;
+  errorMessage: string = '';
 
   //Initialize status for loader
-  isLoading : boolean = false;
+  isLoading   : boolean = false;
 
   constructor(
-      private fb         : FormBuilder,
-      private r          : Router,
-      private authService: AuthService
+      private fb          : FormBuilder,
+      private r           : Router,
+      private authService : AuthService,
+      private ar          : ActivatedRoute,
+      private httpResponse: HttpResponseService,
   ) { }
 
   ngOnInit(): void {
-
+    this.ar.queryParams.subscribe(
+        params => {
+          if (params) {
+            this.isAuth = params['auth'];
+          }
+        }
+    );
   }
 
   //Form submit method
@@ -61,6 +71,7 @@ export class LoginComponent implements OnInit {
       error: error => {
         this.isLoading = false;
         this.hasError   = true;
+        this.errorMessage = this.httpResponse.convert(error.error.error.message);
       }
     });
   }

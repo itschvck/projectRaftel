@@ -8,8 +8,9 @@ import { HeaderComponent } from './core/components/main/header/header.component'
 import { FooterComponent } from './core/components/main/footer/footer.component';
 import { NavbarComponent } from './core/components/main/header/navbar/navbar.component';
 import { HomeComponent } from './features/home/home.component';
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { SharedModule } from "./shared/shared.module";
+import { AuthInterceptor } from "./core/interceptors/auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,11 @@ import { SharedModule } from "./shared/shared.module";
     HttpClientModule,
     SharedModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }],
   exports: [],
   bootstrap: [AppComponent]
 })
