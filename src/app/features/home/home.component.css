@@ -1,0 +1,12 @@
+.divider {
+    background-image: url('src/assets/img/light-wave-bottom.svg') !important;
+    background-position: center bottom !important;
+}
+.divider::before, .divider::after {
+    background-color: transparent !important;
+}
+.kv {
+    background-image: url('src/assets/img/kv-placeholder.jpg') !important;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    background-size : cover !important;
+}
