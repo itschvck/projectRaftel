@@ -28,13 +28,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  onLogOut() {
-    this.authService.logout();
-  }
-
   ngOnDestroy() {
     //Destroy subscription
     this.adminStatus.unsubscribe();
   }
 
+  callUsNow() {
+
+  }
 }
