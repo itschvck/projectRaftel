@@ -24,6 +24,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.adminStatus = this.authService.loggedUser.subscribe({
       next: admin => {
         this.isLogged = !!admin;
+      },
+      error: err => {
+
       }
     });
   }
@@ -33,7 +36,4 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.adminStatus.unsubscribe();
   }
 
-  callUsNow() {
-
-  }
 }
