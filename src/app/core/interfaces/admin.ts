@@ -1,12 +1,12 @@
 export interface AdminData {
-  email: string,
+  email   : string,
   password: string
 }
 
 export interface AdminInterface {
-  idToken: string,
-  email: string,
+  idToken     : string,
+  email       : string,
   refreshToken: string,
-  expiresIn: string,
-  localId: string
+  expiresIn   : string,
+  localId     : string
 }
