@@ -1,27 +1,28 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn : 'root'
 })
 export class HttpResponseService {
 
-  //Initialize return variable
-  returnVar: string = '';
+  // DECLARE AND/OR INITIALIZE PROPERTIES AND THEIR TYPES
+  // STRINGS
+  returnVar : string = '';
 
   constructor() { }
 
-  //Convert method
-  convert(response: string) {
+  // CONVERT METHOD
+  convert(response : string) {
     switch (response) {
-      case 'EMAIL_EXISTS': {
+      case 'EMAIL_EXISTS'     : {
         this.returnVar = 'This email already exists.';
         return this.returnVar;
       }
-      case 'EMAIL_NOT_FOUND': {
+      case 'EMAIL_NOT_FOUND'  : {
         this.returnVar = 'Email does not exist!';
         return this.returnVar;
       }
-      case 'INVALID_PASSWORD': {
+      case 'INVALID_PASSWORD' : {
         this.returnVar = 'Invalid password!';
         return this.returnVar;
       }
@@ -29,12 +30,12 @@ export class HttpResponseService {
     }
   }
 
-  //Response to Array with its own ID
-  responseToArray(response: any) {
-    const array: any[] = [];
+  // HTTP RESPONSE TO ARRAY WITH ITS OWN ID
+  httpResponseToArray(response : any) {
+    const array : any[] = [];
     for (const key in response) {
       if (response.hasOwnProperty(key)) {
-        array.push({...response[key], id: key});
+        array.push({ ...response[key], id: key });
       }
     }
     return array;

@@ -3,22 +3,27 @@ import { AuthService } from "../../services/auth.service";
 import { ActivatedRoute } from "@angular/router";
 
 @Component({
-  selector: 'raftel-admin',
-  templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css']
+  selector    : 'raftel-admin',
+  templateUrl : './admin.component.html',
+  styleUrls   : ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
 
-  //Check if redirected for unauthorized navigation
-  isAuth: string = '';
+  // DECLARE AND/OR INITIALIZE PROPERTIES AND THEIR TYPES
+  // STRINGS
+  isAuth : string = '';
 
   constructor(
-      private authService: AuthService,
-      private ar         : ActivatedRoute
+      // PUBLIC
+
+      // PRIVATE
+      private authService    : AuthService,
+      private activatedRoute : ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.ar.queryParams.subscribe(
+    // GET QUERY PARAMETERS FROM URL
+    this.activatedRoute.queryParams.subscribe(
         params => {
           this.isAuth = params['auth'];
         }

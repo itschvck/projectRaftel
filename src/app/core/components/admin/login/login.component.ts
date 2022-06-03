@@ -6,44 +6,47 @@ import { AuthService } from "../../../services/auth.service";
 import { HttpResponseService } from "../../../../shared/services/http-response.service";
 
 @Component({
-  selector: 'raftel-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector    : 'raftel-login',
+  templateUrl : './login.component.html',
+  styleUrls   : ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
 
-//Link authForm to Reactive Form in template
-  authForm = this.fb.group({
-    email   : ['', Validators.compose([Validators.required, Validators.email])],
-    password: ['', Validators.compose([Validators.required, Validators.minLength(6)])]
+  // DECLARE AND/OR INITIALIZE PROPERTIES AND THEIR TYPES
+  // BOOLEAN
+  hasError     : boolean = false;
+  isLoading    : boolean = false;
+
+  // FORMS
+  authForm     : FormGroup = this.formBuilder.group({
+    email      : ['', Validators.compose([Validators.required, Validators.email])],
+    password   : ['', Validators.compose([Validators.required, Validators.minLength(6)])]
   });
 
-  //Initialize adminData object with Admin interface
-  adminData: AdminData = {
-    email     : '',
-    password  : ''
+  // OBJECTS
+  adminData    : AdminData = {
+    email      : '',
+    password   : ''
   }
 
-  //Check if redirected for unauthorized navigation
-  isAuth      : string = '';
-
-  //Initialize error status
-  hasError    : boolean = false;
-  errorMessage: string = '';
-
-  //Initialize status for loader
-  isLoading   : boolean = false;
+  // STRINGS
+  isAuth       : string = '';
+  errorMessage : string = '';
 
   constructor(
-      private fb          : FormBuilder,
-      private r           : Router,
-      private authService : AuthService,
-      private ar          : ActivatedRoute,
-      private httpResponse: HttpResponseService,
+      // PUBLIC
+
+      // PRIVATE
+      private formBuilder         : FormBuilder,
+      private router              : Router,
+      private authService         : AuthService,
+      private activatedRoute      : ActivatedRoute,
+      private httpResponseService : HttpResponseService
   ) { }
 
   ngOnInit(): void {
-    this.ar.queryParams.subscribe(
+    // GET QUERY PARAMETERS FROM URL
+    this.activatedRoute.queryParams.subscribe(
         params => {
           if (params) {
             this.isAuth = params['auth'];
@@ -52,26 +55,37 @@ export class LoginComponent implements OnInit {
     );
   }
 
-  //Form submit method
-  onSubmit(authForm: FormGroup) {
-    this.isLoading = true;
-    console.log(this.isLoading);
-    //Store email and password to userData object
+  // METHOD : SUBMIT LOGIN FORM
+  onAuthFormSubmit(authForm: FormGroup) {
+    // SHOW LOADING COMPONENT AS OVERLAY WHILE SENDING LOGIN REQUEST
+    this.isLoading          = true;
+
+    // STORE EMAIL AND PASSWORD TO USERDATA OBJECT
     this.adminData.email    = authForm.value.email;
     this.adminData.password = authForm.value.password;
-    // Call authService for login, subscribe, and handle response
+
+    // CALL AUTHSERVICE FOR LOGIN, SUBSCRIBE, AND HANDLE RESPONSE
     this.authService.login(this.adminData).subscribe({
+      // SUCCESS RESPONSE
       next : response => {
+        // HIDE LOADING COMPONENT AFTER RECEIVING LOGIN RESPONSE AND SET FALSE HAS ERROR PROPERTY
         this.isLoading = false;
-        this.hasError   = false;
-        //Clear authForm
+        this.hasError  = false;
+
+        // CLEAR AUTHFORM
         this.authForm.reset();
-        this.r.navigate(['admin']);
+
+        // NAVIGATE TO ADMIN COMPONENT
+        this.router.navigate(['admin']);
       },
+      // ERROR RESPONSE
       error: error => {
+        // HIDE LOADING COMPONENT AFTER RECEIVING LOGIN RESPONSE AND SET TRUE HAS ERROR PROPERTY
         this.isLoading = false;
         this.hasError   = true;
-        this.errorMessage = this.httpResponse.convert(error.error.error.message);
+
+        // STORE TO ERROR MESSAGE PROPERTY THE HTTP ERROR RESPONSE
+        this.errorMessage = this.httpResponseService.convert(error.error.error.message);
       }
     });
   }

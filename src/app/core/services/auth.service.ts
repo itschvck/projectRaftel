@@ -7,109 +7,137 @@ import { Router } from "@angular/router";
 import { Admin } from '../models/admin.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn : 'root'
 })
 export class AuthService {
 
-  //Initialize logged user BehaviorSubject with User model type
-  loggedUser: BehaviorSubject<Admin | any> = new BehaviorSubject<Admin | any>(null);
+  // DECLARE AND/OR INITIALIZE PROPERTIES AND THEIR TYPES
+  // ANY
+  expirationTokenTimer : any;
 
-  //Store API Key
-  firebaseApiKey: string = environment.firebaseApiKey;
+  // STRINGS
+  firebaseApiKey       : string = environment.firebaseApiKey;
 
-  //Store token expiration timer
-  expirationTokenTimer: any;
+  // SUBJECTS
+  loggedUser           : BehaviorSubject<Admin | any> = new BehaviorSubject<Admin | any>(null);
 
-  constructor(private http: HttpClient, private r: Router) { }
+  constructor(
+      // PUBLIC
 
-  //Segregating store of user
-  private handleAdminStore(id: string, email: string, token: string, expiresIn: number) {
-    //Converting Firebase expire time millisecond into Date
+      // PRIVATE
+      private httpClient : HttpClient,
+      private router     : Router) { }
+
+  // SEGREGATING STORE OF USER
+  private handleAdminStore(
+      id        : string,
+      email     : string,
+      token     : string,
+      expiresIn : number) {
+    // CONVERTING FIREBASE EXPIRE TIME MILLISECOND INTO DATE
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-    //Store in method variable user the User which is in User Model type
+
+    // STORE IN METHOD VARIABLE USER THE USER WHICH IS IN USER MODEL TYPE
     const admin = new Admin(
         id,
         email,
         token,
         expirationDate);
-    //Emit to logged user subject the in method variable user
+
+    // EMIT TO LOGGED USER SUBJECT THE IN METHOD VARIABLE USER
     this.loggedUser.next(admin);
-    //Start token validity timer
+
+    // START TOKEN VALIDITY TIMER
     this.autoLogout(expiresIn * 1000);
-    //Store user data to browser local storage
+
+    // STORE USER DATA TO BROWSER'S LOCAL STORAGE
     localStorage.setItem('adminData', JSON.stringify(admin));
   }
 
-  //Login method
-  login(adminData: AdminData) {
-    return this.http.post<AdminInterface>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+this.firebaseApiKey, {
-      email            : adminData.email,
-      password         : adminData.password,
-      returnSecureToken: true
+  // LOGIN METHOD
+  login(adminData : AdminData) {
+    return this.httpClient.post<AdminInterface>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + this.firebaseApiKey, {
+      email             : adminData.email,
+      password          : adminData.password,
+      returnSecureToken : true
     })
-        //Pipe to transform the response of login Observable
-        //Tap to store the logged user
-        .pipe(tap({
-              next: response => {
-                this.handleAdminStore(
-                    response.localId,
-                    response.email,
-                    response.idToken,
-                    +response.expiresIn);
-              }
+        // PIPE TO TRANSFORM THE RESPONSE OF LOGIN OBSERVABLE - TAP TO STORE THE LOGGED USER
+        .pipe(
+            tap({
+                  next : response => {
+                    this.handleAdminStore(
+                        response.localId,
+                        response.email,
+                        response.idToken,
+                        +response.expiresIn
+                    );
+                  }
             }
-        ));
+            ));
   }
 
-  //Method that checks if the user is already logged in (in the browser) and auto login if true
+  // METHOD THAT CHECKS IF THE USER IS ALREADY LOGGED IN (IN THE BROWSER) AND AUTO LOGIN IF TRUE
   autoLogin() {
-    //Assign parsed userdata from local storage to userData with type user model but all string
-    const adminData: {
-      id: string,
-      email: string,
-      _token: string,
-      _tokenExpirationDate: string
+    // ASSIGN PARSED USERDATA FROM LOCAL STORAGE TO USERDATA WITH TYPE USER MODEL BUT ALL STRING
+    const adminData : {
+      id                   : string,
+      email                : string,
+      _token               : string,
+      _tokenExpirationDate : string
     } = JSON.parse(localStorage.getItem('adminData') || '{}');
-    //Check if there is a user Logged, if not return nothing
+
+    // CHECK IF THERE IS A USER LOGGED, IF NOT RETURN NOTHING
     if (!adminData) {
       return;
     }
-    //Instantiating new user with data retrieved and store it in loadedUser variable
+
+    // INSTANTIATING NEW USER WITH DATA RETRIEVED AND STORE IT IN LOADEDUSER VARIABLE
     const loadedUser = new Admin(
         adminData.id,
         adminData.email,
         adminData._token,
         new Date(adminData._tokenExpirationDate)
     );
-    //Checking if the token from the browser it's still the same of the token stored in memory
+
+    // CHECKING IF THE TOKEN FROM THE BROWSER IT'S STILL THE SAME OF THE TOKEN STORED IN MEMORY
     if (loadedUser.token) {
+      // STORE LOADED USER
       this.loggedUser.next(loadedUser);
-      //Starting token validity timer with remaining time
+
+      // STARTING TOKEN VALIDITY TIMER WITH REMAINING TIME
       const remainingTimer = new Date(adminData._tokenExpirationDate).getTime() - new Date().getTime();
       this.autoLogout(remainingTimer);
     }
   }
 
-  //Auto logout method
-  autoLogout(tokenDuration: number) {
+  // AUTO LOGOUT METHOD WHEN TOKEN EXPIRES
+  autoLogout(tokenDuration : number) {
     this.expirationTokenTimer = setTimeout(() => {
+      // ALERT POPUP
       alert('Token expired. Please login again.');
+
+      // CALL LOGOUT METHOD
       this.logout();
     }, tokenDuration);
   }
 
-  //Logout method
+  // LOGOUT METHOD
   logout() {
-    //Assign null to logged user Subject
+    // CHANGE TO NULL LOGGED USER SUBJECT
     this.loggedUser.next(null);
-    this.r.navigate(['']);
-    //Remove data in browser local storage
+
+    // NAVIGATE TO HOME PAGE
+    this.router.navigate(['']);
+
+    // REMOVE DATA IN BROWSER LOCAL STORAGE
     localStorage.removeItem('adminData');
-    //Check if there is an token expiration timer and stop
+
+    // CHECK IF THERE IS AN TOKEN EXPIRATION TIMER AND STOP
     if (this.expirationTokenTimer) {
       clearTimeout(this.expirationTokenTimer);
     }
-    //Reset timer
+
+    // RESET TOKEN TIMER TO NULL
     this.expirationTokenTimer = null;
   }
 

@@ -8,11 +8,11 @@ import { SharedModule } from "../../../shared/shared.module";
 
 
 @NgModule({
-  declarations: [
+  declarations : [
     AdminComponent,
     LoginComponent
   ],
-  imports: [
+  imports : [
     CommonModule,
     AdminRoutingModule,
     SharedModule

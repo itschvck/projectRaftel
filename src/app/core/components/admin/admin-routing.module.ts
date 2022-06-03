@@ -5,13 +5,13 @@ import { LoginComponent } from "./login/login.component";
 import { AuthGuard } from "../../guards/auth.guard";
 import { LoginGuard } from "../../guards/login.guard";
 
-const routes: Routes = [
-  { path: '',      component: AdminComponent, canActivate: [AuthGuard] },
-  { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
+const routes : Routes = [
+  { path : '',      component : AdminComponent, canActivate : [AuthGuard] },
+  { path : 'login', component : LoginComponent, canActivate : [LoginGuard] }
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  imports : [RouterModule.forChild(routes)],
+  exports : [RouterModule]
 })
 export class AdminRoutingModule { }
