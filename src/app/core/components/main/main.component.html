@@ -1,7 +1,11 @@
 <!-- SET HEADER AND FOOTER TO STICK AT TOP AND BOTTOM -->
 <div class="flex flex-col">
-    <raftel-header class="z-50" *ngIf="r.url !== '/'"></raftel-header>
-    <div [ngClass]="{'container-fluid px-10 lg:px-3' : r.url !== '/'}">
+    <raftel-header
+      class = "z-50"
+      *ngIf = "router.url !== '/'"
+    >
+    </raftel-header>
+    <div [ngClass] = "{'container-fluid px-10 lg:px-3' : router.url !== '/'}">
         <router-outlet></router-outlet>
     </div>
     <raftel-footer></raftel-footer>

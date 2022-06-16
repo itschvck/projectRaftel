@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
-import { GlobalStore } from "../../../shared/stores/global.store";
 
 @Component({
   selector: 'raftel-main',
@@ -9,10 +8,8 @@ import { GlobalStore } from "../../../shared/stores/global.store";
 })
 export class MainComponent implements OnInit{
 
-  loginPage: boolean = false;
-
   constructor(
-      public  r : Router
+      public  router : Router
   ) { }
 
   ngOnInit(): void {
